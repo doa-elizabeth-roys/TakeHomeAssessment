@@ -52,7 +52,7 @@ func (d *driver) GetAllChildFolders(orgID uuid.UUID, name string) []Folder {
 	var childFolders []Folder
 	var parentFolder *Folder
 
-	// Step 1: Find the parent folder based on orgID and name
+	// Find the parent folder based on orgID and name
 	for _, folder := range d.folders {
 		if folder.OrgId == orgID && folder.Paths == name {
 			parentFolder = &folder
@@ -60,18 +60,18 @@ func (d *driver) GetAllChildFolders(orgID uuid.UUID, name string) []Folder {
 		}
 	}
 
-	// Step 2: If parent folder is not found, return an empty slice
+	// If parent folder is not found, return an empty slice
 	if parentFolder == nil {
 		return []Folder{}
 	}
 
-	// Step 3: Find all child folders where the path starts with the parent's path followed by "."
+	// Find all child folders where the path starts with the parent's path followed by "."
 	for _, folder := range d.folders {
 		if folder.OrgId == orgID && strings.HasPrefix(folder.Paths, parentFolder.Paths+".") {
 			childFolders = append(childFolders, folder)
 		}
 	}
 
-	// Step 4: Return the list of child folders
+	//Return the list of child folders
 	return childFolders
 }
