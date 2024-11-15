@@ -20,3 +20,18 @@ func main() {
 	fmt.Printf("\n Folders for orgID: %s", orgID)
 	folder.PrettyPrint(orgFolder)
 }
+
+// package main
+
+// import (
+// 	"fmt"
+// 	"github.com/georgechieng-sc/interns-2022/folders"
+// )
+
+// func main() {
+// 	res := folders.GenerateData()
+
+// 	folders.PrettyPrint(res)
+
+// 	folders.WriteSampleData(res)
+// }
