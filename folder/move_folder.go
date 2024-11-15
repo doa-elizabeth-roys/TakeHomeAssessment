@@ -2,7 +2,7 @@ package folder
 
 import (
 	"errors"
-	// "strings"
+	"strings"
 )
 
 func (f *driver) MoveFolder(name string, dst string) ([]Folder, error) {
@@ -27,8 +27,18 @@ func (f *driver) MoveFolder(name string, dst string) ([]Folder, error) {
 			break
 		}
 	}
-	if dstFolder == nil {
-		return nil, errors.New("destination folder does not exist")
+
+	// Move the folder: update the source folder's path
+	newPath := dstFolder.Paths + "." + srcFolder.Name
+	srcFolder.Paths = newPath
+
+	// Update the paths of child folders
+	for i := range f.folders {
+		// Check if the folder's path starts with the source folder's path
+		if strings.HasPrefix(f.folders[i].Paths, srcFolder.Paths+".") {
+			// Update child folder's path to reflect new structure
+			f.folders[i].Paths = dstFolder.Paths + "." + strings.TrimPrefix(f.folders[i].Paths, srcFolder.Paths)
+		}
 	}
 
 	// Return the updated folder structure
