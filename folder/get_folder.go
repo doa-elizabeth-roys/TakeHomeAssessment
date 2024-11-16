@@ -1,6 +1,8 @@
 package folder
 
 import (
+	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/gofrs/uuid"
@@ -24,54 +26,35 @@ func (f *driver) GetFoldersByOrgID(orgID uuid.UUID) []Folder {
 
 }
 
-// func (f *driver) GetAllChildFolders(orgID uuid.UUID, name string) []Folder {
-// 	// Your code here...
-// 	// Slice to hold child folders
-// 	var childFolders []Folder
+func (d *driver) GetAllChildFolders(orgID uuid.UUID, name string) ([]Folder, error) {
+	// Input validation
+	if orgID == uuid.Nil {
+		return nil, errors.New("invalid orgID")
+	}
+	if name == "" {
+		return nil, errors.New("folder name cannot be empty")
+	}
 
-// 	// Iterate through all folders
-// 	for _, folder := range f.folders {
-// 		// Check if the folder belongs to the same organization
-// 		if folder.OrgId == orgID {
-// 			// Check if the folder's path starts with the parent folder's path (name)
-// 			if strings.HasPrefix(folder.Paths, name+".") {
-// 				// Add to childFolders if it is a match
-// 				childFolders = append(childFolders, folder)
-// 			}
-// 		}
-
-// 		if (folder.OrgId != orgID || name != folder.Paths){
-
-// 		}
-// 	}
-// 	//return []Folder{}
-// 	return childFolders
-// }
-
-func (d *driver) GetAllChildFolders(orgID uuid.UUID, name string) []Folder {
-	var childFolders []Folder
-	var parentFolder *Folder
-
-	// Find the parent folder based on orgID and name
+	// Check if folder exists
+	var folderExists bool
 	for _, folder := range d.folders {
 		if folder.OrgId == orgID && folder.Paths == name {
-			parentFolder = &folder
+			folderExists = true
 			break
 		}
 	}
 
-	// If parent folder is not found, return an empty slice
-	if parentFolder == nil {
-		return []Folder{}
+	if !folderExists {
+		return nil, fmt.Errorf("folder '%s' does not exist in the specified organisation '%s'", name, orgID)
 	}
 
-	// Find all child folders where the path starts with the parent's path followed by "."
+	// Find all child folders
+	var childFolders []Folder
 	for _, folder := range d.folders {
-		if folder.OrgId == orgID && strings.HasPrefix(folder.Paths, parentFolder.Paths+".") {
+		if folder.OrgId == orgID && strings.HasPrefix(folder.Paths, name+".") {
 			childFolders = append(childFolders, folder)
 		}
 	}
 
-	//Return the list of child folders
-	return childFolders
+	return childFolders, nil
 }

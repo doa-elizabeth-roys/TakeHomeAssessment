@@ -8,7 +8,7 @@ type IDriver interface {
 	// component 1
 	// Implement the following methods:
 	// GetAllChildFolders returns all child folders of a specific folder.
-	GetAllChildFolders(orgID uuid.UUID, name string) []Folder
+	GetAllChildFolders(orgID uuid.UUID, name string) ([]Folder, error)
 
 	// component 2
 	// Implement the following methods:
