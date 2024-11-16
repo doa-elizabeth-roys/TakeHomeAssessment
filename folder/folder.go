@@ -21,7 +21,7 @@ type driver struct {
 	// data structure to store folders
 	// or preprocessed data
 
-	// example: feel free to change the data structure, if slice is not what you want
+	//feel free to change the data structure, if slice is not what you want
 	folders []Folder
 }
 
